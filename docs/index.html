@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fan Token Agentic Wallet Starter Kit</title>
+<meta name="description" content="Open-source starter kit for building AI-powered agentic wallets for Fan Tokens on Chiliz Chain.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --chz:    #e8243c;
+    --chz2:   #ff4d63;
+    --dark:   #08090c;
+    --dark2:  #0f1117;
+    --dark3:  #181c24;
+    --border: rgba(255,255,255,0.07);
+    --text:   #f0f2f7;
+    --muted:  #7a8090;
+    --green:  #22d984;
+    --amber:  #f5a623;
+    --blue:   #4d9cff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── Grid noise background ──────────────────────────────────────── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(232,36,60,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,36,60,.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ── Nav ────────────────────────────────────────────────────────── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,9,12,0.88);
+    backdrop-filter: blur(16px);
+  }
+  .nav-inner { display: flex; align-items: center; gap: 12px; padding: 14px 24px; max-width: 1060px; margin: 0 auto; }
+  .nav-logo { font-size: 13px; font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .nav-logo .ball { width: 22px; height: 22px; background: var(--chz); border-radius: 50%; display: grid; place-items: center; font-size: 12px; }
+  .nav-links { margin-left: auto; display: flex; gap: 4px; }
+  .nav-link { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: color .15s; }
+  .nav-link:hover { color: var(--text); }
+  .nav-cta {
+    font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+    background: var(--chz); color: #fff; text-decoration: none;
+    transition: background .15s;
+  }
+  .nav-cta:hover { background: var(--chz2); }
+
+  /* ── Hero ───────────────────────────────────────────────────────── */
+  .hero { padding: 96px 0 72px; text-align: center; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--chz); border: 1px solid rgba(232,36,60,.3); border-radius: 20px;
+    padding: 5px 14px; margin-bottom: 28px;
+    background: rgba(232,36,60,.06);
+  }
+  .hero-title {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -.03em;
+    margin-bottom: 20px;
+  }
+  .hero-title span { color: var(--chz); }
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 19px);
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    font-weight: 400;
+  }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--chz); color: #fff; font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 600; padding: 13px 24px; border-radius: 10px;
+    text-decoration: none; transition: background .15s, transform .1s;
+  }
+  .btn-primary:hover { background: var(--chz2); transform: translateY(-1px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--dark3); color: var(--text); font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 600; padding: 13px 24px; border-radius: 10px;
+    text-decoration: none; border: 1px solid var(--border);
+    transition: border-color .15s, transform .1s;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,.2); transform: translateY(-1px); }
+
+  /* ── Quick start terminal ───────────────────────────────────────── */
+  .terminal-wrap { margin: 56px auto 0; max-width: 640px; }
+  .terminal {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,.5);
+  }
+  .term-bar {
+    background: var(--dark3); padding: 10px 16px;
+    display: flex; align-items: center; gap: 7px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+  .term-title { font-size: 12px; color: var(--muted); margin-left: auto; margin-right: auto; }
+  .term-body { padding: 20px 22px; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.9; }
+  .term-comment { color: var(--muted); }
+  .term-cmd::before { content: '$ '; color: var(--chz); }
+  .term-cmd { color: var(--text); }
+  .term-out { color: var(--green); padding-left: 14px; }
+
+  /* ── Section ────────────────────────────────────────────────────── */
+  section { padding: 80px 0; }
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--chz); margin-bottom: 12px;
+  }
+  .section-title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -.02em; margin-bottom: 14px; }
+  .section-sub { font-size: 16px; color: var(--muted); max-width: 560px; }
+
+  /* ── Use cases ──────────────────────────────────────────────────── */
+  .use-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 40px; }
+  .uc-card {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .uc-card:hover { border-color: rgba(232,36,60,.35); transform: translateY(-2px); }
+  .uc-icon { font-size: 28px; margin-bottom: 14px; }
+  .uc-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .uc-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+  .uc-tag {
+    display: inline-block; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    padding: 3px 9px; background: rgba(77,156,255,.1); color: var(--blue);
+    border-radius: 5px; border: 1px solid rgba(77,156,255,.2);
+  }
+  .uc-payment-tag {
+    background: rgba(34,217,132,.08); color: var(--green);
+    border-color: rgba(34,217,132,.2);
+  }
+
+  /* ── Features grid ──────────────────────────────────────────────── */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 40px; }
+  .feat {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 22px;
+  }
+  .feat-icon { font-size: 20px; margin-bottom: 10px; }
+  .feat-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .feat-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── LLM table ──────────────────────────────────────────────────── */
+  .llm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 36px; }
+  .llm-card {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .llm-icon { font-size: 24px; flex-shrink: 0; }
+  .llm-name { font-size: 14px; font-weight: 600; }
+  .llm-sub { font-size: 12px; color: var(--muted); }
+  .llm-badge { margin-left: auto; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+  .badge-built { background: rgba(34,217,132,.12); color: var(--green); border: 1px solid rgba(34,217,132,.25); }
+  .badge-compat { background: rgba(245,166,35,.1); color: var(--amber); border: 1px solid rgba(245,166,35,.2); }
+
+  /* ── Architecture diagram ───────────────────────────────────────── */
+  .arch-pre {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 28px 32px; margin-top: 36px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    line-height: 1.8; overflow-x: auto; color: var(--muted);
+  }
+  .arch-pre .hl { color: var(--text); }
+  .arch-pre .hl2 { color: var(--chz); }
+  .arch-pre .hl3 { color: var(--green); }
+
+  /* ── CTA banner ─────────────────────────────────────────────────── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(232,36,60,.12), rgba(232,36,60,.04));
+    border: 1px solid rgba(232,36,60,.2);
+    border-radius: 16px; padding: 56px 48px;
+    text-align: center; margin: 0 0 80px;
+  }
+  .cta-title { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -.02em; margin-bottom: 12px; }
+  .cta-sub { font-size: 16px; color: var(--muted); margin-bottom: 32px; }
+
+  /* ── Footer ─────────────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 24px;
+    display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;
+    font-size: 12px; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* ── Divider ────────────────────────────────────────────────────── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .cta-banner { padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="ball">⚽</div>
+      fan-token-agentic-wallet
+    </div>
+    <div class="nav-links">
+      <a class="nav-link" href="#usecases">Use cases</a>
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#llms">LLMs</a>
+      <a class="nav-link" href="#architecture">Architecture</a>
+    </div>
+    <a class="nav-cta" href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit">View on GitHub</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-tag">⚽ Open Source · v1.0.0 · MIT License</div>
+    <h1 class="hero-title">Fan Token<br><span>Agentic Wallet</span><br>Starter Kit</h1>
+    <p class="hero-sub">Build AI-powered wallets for Fan Tokens on Chiliz Chain. Payments, streaming, governance, rewards — bring your own LLM.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit">⬇ Clone on GitHub</a>
+      <a class="btn-secondary" href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit/blob/main/README.md">Read the docs</a>
+    </div>
+
+    <div class="terminal-wrap">
+      <div class="terminal">
+        <div class="term-bar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <div class="term-title">terminal</div>
+        </div>
+        <div class="term-body">
+          <div class="term-comment"># Clone and run in under 2 minutes</div>
+          <div class="term-cmd">git clone https://github.com/your-org/fan-token-agentic-wallet-starter-kit</div>
+          <div class="term-cmd">cd fan-token-agentic-wallet-starter-kit && npm install</div>
+          <div class="term-cmd">cp .env.example .env  <span style="color:var(--muted)"># add your API key</span></div>
+          <div class="term-cmd">npm run dev</div>
+          <div class="term-out">✓ Wallet   0x1a2b...3c4d (testnet)</div>
+          <div class="term-out">✓ LLM      claude (claude-sonnet-4-5)</div>
+          <div class="term-out">✓ Policy   100 CHZ daily cap · mode: confirm</div>
+          <div class="term-out">Agent ready. Try: 'Pay 5 CHZ for a match stream'</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── Use cases ── -->
+<section id="usecases">
+  <div class="wrap">
+    <div class="section-label">Use cases</div>
+    <h2 class="section-title">Five examples. Real payment flows.</h2>
+    <p class="section-sub">Each example is a runnable TypeScript file with a header explaining the use case, who it's for, and what to wire up for production.</p>
+
+    <div class="use-cases">
+      <div class="uc-card">
+        <div class="uc-icon">⚽</div>
+        <div class="uc-title">Match-Day Wallet</div>
+        <div class="uc-desc">Detects match day, checks CHZ balance, evaluates sentiment, and proposes purchasing a ticket or streaming pass automatically.</div>
+        <span class="uc-tag uc-payment-tag">npm run example:matchday</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">📺</div>
+        <div class="uc-title">Streaming Payments</div>
+        <div class="uc-desc">Pay-per-minute CHZ stream to a content provider. Fan pays only for what they watch — perfect for exclusive post-match content.</div>
+        <span class="uc-tag uc-payment-tag">npm run example:streaming</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">🗳️</div>
+        <div class="uc-title">Governance Agent</div>
+        <div class="uc-desc">Reads active club proposals, reasons about them based on fan preferences, and autonomously casts votes with human approval.</div>
+        <span class="uc-tag">npm run example:governance</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">🎁</div>
+        <div class="uc-title">Loyalty Rewards</div>
+        <div class="uc-desc">Monitors available loyalty rewards and airdrops, prioritises by expiry, and proposes claiming them — all in one automated flow.</div>
+        <span class="uc-tag">npm run example:loyalty</span>
+      </div>
+      <div class="uc-card">
+        <div class="uc-icon">📊</div>
+        <div class="uc-title">Multi-Club Portfolio</div>
+        <div class="uc-desc">Hype-scores BAR, CITY, and PSG simultaneously. Ranks by signal strength and proposes a rebalancing swap if the opportunity is clear.</div>
+        <span class="uc-tag">npm run example:portfolio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Features ── -->
+<section id="features">
+  <div class="wrap">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to start.</h2>
+    <p class="section-sub">A complete, opinionated scaffold. Each layer is independently replaceable.</p>
+
+    <div class="features">
+      <div class="feat"><div class="feat-icon">🔌</div><div class="feat-title">LLM-Agnostic</div><div class="feat-desc">Claude and OpenAI built-in. Implement one interface to add any model — Gemini, Ollama, Groq, or your own.</div></div>
+      <div class="feat"><div class="feat-icon">⛓️</div><div class="feat-title">Chiliz Chain Native</div><div class="feat-desc">Full EVM support via viem. Mainnet (88888) and Spicy testnet (88882) pre-configured. Works out of the box.</div></div>
+      <div class="feat"><div class="feat-icon">💸</div><div class="feat-title">Payment Tools</div><div class="feat-desc">Direct payments, streaming micropayments, DEX swaps, governance votes, loyalty claims — all as agent tools.</div></div>
+      <div class="feat"><div class="feat-icon">🔥</div><div class="feat-title">Hype Score Engine</div><div class="feat-desc">0–100 trading signal from match results + news sentiment. Transparent, extendable, and mock-data friendly.</div></div>
+      <div class="feat"><div class="feat-icon">🛡️</div><div class="feat-title">Guardrails</div><div class="feat-desc">Daily spend caps, per-tx limits, approval thresholds — enforced at the execution layer. The LLM cannot bypass them.</div></div>
+      <div class="feat"><div class="feat-icon">👤</div><div class="feat-title">Human-in-the-Loop</div><div class="feat-desc">Confirm mode requires y/N approval before every transaction. Auto mode acts within caps. Your choice.</div></div>
+      <div class="feat"><div class="feat-icon">🧪</div><div class="feat-title">Mock-First</div><div class="feat-desc">All external data falls back to mock data. The full agent loop runs from first clone — no API keys required.</div></div>
+      <div class="feat"><div class="feat-icon">📄</div><div class="feat-title">Integration Stubs</div><div class="feat-desc">DEX swaps, governance, streaming protocols, and rewards are stubbed with clear // NOTE comments and code examples.</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── LLMs ── -->
+<section id="llms">
+  <div class="wrap">
+    <div class="section-label">LLM Support</div>
+    <h2 class="section-title">Bring your own model.</h2>
+    <p class="section-sub">Any LLM with tool use / function calling support can power the agent. Set <code style="font-family:JetBrains Mono,monospace;font-size:13px;background:var(--dark3);padding:2px 6px;border-radius:4px;">LLM_PROVIDER</code> in your <code style="font-family:JetBrains Mono,monospace;font-size:13px;background:var(--dark3);padding:2px 6px;border-radius:4px;">.env</code>.</p>
+
+    <div class="llm-grid">
+      <div class="llm-card"><div class="llm-icon">🤖</div><div><div class="llm-name">Claude</div><div class="llm-sub">Anthropic · Recommended</div></div><span class="llm-badge badge-built">Built-in</span></div>
+      <div class="llm-card"><div class="llm-icon">✨</div><div><div class="llm-name">OpenAI</div><div class="llm-sub">GPT-4o / GPT-4-turbo</div></div><span class="llm-badge badge-built">Built-in</span></div>
+      <div class="llm-card"><div class="llm-icon">☁️</div><div><div class="llm-name">Azure OpenAI</div><div class="llm-sub">via OpenAI adapter</div></div><span class="llm-badge badge-compat">Compatible</span></div>
+      <div class="llm-card"><div class="llm-icon">⚡</div><div><div class="llm-name">Groq</div><div class="llm-sub">OpenAI-compatible endpoint</div></div><span class="llm-badge badge-compat">Compatible</span></div>
+      <div class="llm-card"><div class="llm-icon">🦙</div><div><div class="llm-name">Ollama</div><div class="llm-sub">Local models</div></div><span class="llm-badge badge-compat">Adaptable</span></div>
+      <div class="llm-card"><div class="llm-icon">🔧</div><div><div class="llm-name">Custom</div><div class="llm-sub">Implement LLMAdapter</div></div><span class="llm-badge badge-compat">1 interface</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Architecture ── -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="section-label">Architecture</div>
+    <h2 class="section-title">Four clean layers.</h2>
+    <p class="section-sub">Each layer is independently replaceable. Swap the LLM, the wallet signer, or the data source without touching anything else.</p>
+
+    <div class="arch-pre">
+<span class="hl">src/</span>
+├── <span class="hl2">llm-adapters/</span>    <span class="hl3">← LLMAdapter interface + Claude, OpenAI adapters</span>
+├── <span class="hl2">agent/</span>           <span class="hl3">← Multi-turn agent loop (LLM-agnostic)</span>
+├── <span class="hl2">mcp-tools/</span>       <span class="hl3">← Tool definitions + executor (payments, swaps, votes)</span>
+├── <span class="hl2">wallet/</span>          <span class="hl3">← Chiliz Chain wallet client (viem)</span>
+├── <span class="hl2">guardrails/</span>      <span class="hl3">← Spend policy engine (enforced at execution layer)</span>
+├── <span class="hl2">data/</span>            <span class="hl3">← Sports feed + Hype Score calculator</span>
+└── <span class="hl2">config/</span>          <span class="hl3">← Chain config + Fan Token registry</span>
+
+<span class="hl">examples/</span>
+├── <span class="hl2">match-day-wallet/</span>      <span class="hl3">← Ticket + stream purchase on match day</span>
+├── <span class="hl2">streaming-payments/</span>    <span class="hl3">← Pay-per-minute content access</span>
+├── <span class="hl2">governance-agent/</span>      <span class="hl3">← Autonomous proposal voting</span>
+├── <span class="hl2">loyalty-rewards/</span>       <span class="hl3">← Auto-claim rewards and airdrops</span>
+└── <span class="hl2">multi-club-portfolio/</span>  <span class="hl3">← Multi-token Hype Score + rebalancing</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── CTA ── -->
+<div class="wrap">
+  <div class="cta-banner" style="margin-top:80px;">
+    <h2 class="cta-title">Fork it. Build your club's wallet.</h2>
+    <p class="cta-sub">MIT licensed. No restrictions. Full source on GitHub.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit">⬇ Clone on GitHub</a>
+      <a class="btn-secondary" href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit/blob/main/CONTRIBUTING.md">Contribute</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>Fan Token Agentic Wallet Starter Kit · v1.0.0 · MIT</span>
+  <a href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit">GitHub</a>
+  <a href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit/blob/main/README.md">Docs</a>
+  <a href="https://github.com/your-org/fan-token-agentic-wallet-starter-kit/blob/main/CONTRIBUTING.md">Contributing</a>
+  <a href="https://www.chiliz.com">Chiliz Chain</a>
+  <span>Not affiliated with Chiliz or Socios.com</span>
+</footer>
+
+</body>
+</html>
