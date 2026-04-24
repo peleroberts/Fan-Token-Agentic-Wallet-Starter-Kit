@@ -173,27 +173,6 @@ See [SECURITY.md](./SECURITY.md). Short version:
 
 ---
 
-## Publishing to GitHub
-
-See [INSTRUCTIONS.md](./INSTRUCTIONS.md) for commit titles, release notes, and tags.
-
-**To upload via GitHub browser (no command line needed):**
-
-1. Go to [github.com](https://github.com) and sign in
-2. Click **+** (top right) → **New repository**
-3. Name it `fan-token-agentic-wallet-starter-kit`
-4. Set to **Public**, tick **Add a README** = OFF (you have one already)
-5. Click **Create repository**
-6. On the empty repo page, click **uploading an existing file**
-7. Drag and drop all project files/folders into the upload area
-8. In the **Commit changes** box at the bottom, paste the commit title from `INSTRUCTIONS.md`
-9. Click **Commit changes**
-10. Go to **Releases** (right sidebar) → **Draft a new release**
-11. Tag: `v1.0.0` · Title and notes: copy from `INSTRUCTIONS.md`
-12. Click **Publish release**
-
----
-
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md). All contributions welcome.
